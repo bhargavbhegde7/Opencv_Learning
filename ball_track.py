@@ -5,14 +5,6 @@ import argparse
 import imutils
 import cv2
  
-# construct the argument parse and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video",
-	help="path to the (optional) video file")
-ap.add_argument("-b", "--buffer", type=int, default=64,
-	help="max buffer size")
-args = vars(ap.parse_args())
-
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
@@ -33,26 +25,20 @@ greenLower = (17, 168, 112)
 greenUpper = (255, 255, 255)
 
 
-pts = deque(maxlen=args["buffer"])
- 
-# if a video path was not supplied, grab the reference
-# to the webcam
-if not args.get("video", False):
-	camera = cv2.VideoCapture(0)
- 
-# otherwise, grab a reference to the video file
-else:
-	camera = cv2.VideoCapture(args["video"])
+pts = deque(maxlen=1000)
+
 camera = cv2.VideoCapture('track_red.mp4')
 path = []
+count = 0
 # keep looping
 while True:
+	count = count+1
 	# grab the current frame
 	(grabbed, frame) = camera.read()
  
 	# if we are viewing a video and we did not grab a frame,
 	# then we have reached the end of the video
-	if args.get("video") and not grabbed:
+	if not grabbed:
 		break
  
 	# resize the frame, blur it, and convert it to the HSV
@@ -73,7 +59,7 @@ while True:
 	cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
 		cv2.CHAIN_APPROX_SIMPLE)[-2]
 	center = None
- 
+
 	# only proceed if at least one contour was found
 	if len(cnts) > 0:
 		# find the largest contour in the mask, then use
@@ -83,7 +69,7 @@ while True:
 		((x, y), radius) = cv2.minEnclosingCircle(c)
 		M = cv2.moments(c)
 		center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
- 
+
 		# only proceed if the radius meets a minimum size
 		if radius > 10:
 			# draw the circle and centroid on the frame,
@@ -93,8 +79,17 @@ while True:
 			cv2.circle(frame, center, 5, (0, 0, 255), -1)
  
 	# update the points queue
-	pts.appendleft(center)
-	path.append(center)
+	#if count%10 == 0:
+	'''
+	if center in pts:
+		print 'closed path found'.count
+		'''
+	if center in pts:
+		print count
+	if count%10==0:
+		pts.appendleft(center)
+
+	#path.append(center)
 	#print center
 
 	# loop over the set of tracked points
@@ -108,7 +103,11 @@ while True:
 		# draw the connecting lines
 		#thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
 		#cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
-		cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), 2)
+		'''
+		if pts[i - 1] == pts[i] and count%10 == 0:
+			print ' found '
+		'''
+		cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), 1)
  
 	# show the frame to our screen
 	cv2.imshow("Frame", frame)
@@ -119,7 +118,7 @@ while True:
 		break
 # cleanup the camera and close any open windows
 print "---------------------------------------------"
-print path
+#print type(path)
 print "---------------------------------------------"
 camera.release()
 cv2.destroyAllWindows()
