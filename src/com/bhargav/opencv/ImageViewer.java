@@ -55,13 +55,21 @@ public class ImageViewer {
 		return destination;
 	}
 	
-	/*public Mat getEroded(Mat source){
-			
+	public Mat getEroded(Mat source){
+		int erosion_size = 5;
+		Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(2*erosion_size + 1, 2*erosion_size+1));
+		Mat destination = new Mat(source.rows(),source.cols(),source.type());
+        Imgproc.erode(source, destination, element);
+        return destination;
 	}
-
+	
 	public Mat getDilated(Mat source){
-		
-	}*/
+        int dilation_size = 5;
+        Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(2*dilation_size + 1, 2*dilation_size+1));
+        Mat destination = new Mat(source.rows(),source.cols(),source.type());
+        Imgproc.dilate(source, destination, element1);
+        return destination;
+	}
 	
 	/* ------------------------------------- */
 	
@@ -73,10 +81,11 @@ public class ImageViewer {
 		/* --------------- */
 		Mat blurredImage = getBlurredImage(image);
 		Mat hsv = getHSVImage(blurredImage);
-		Mat mask = getMaskInRange(hsv);
 		
-		//mask = getEroded(mask);
-		//mask = getDilated(mask);
+		Mat mask = getMaskInRange(hsv);
+			mask = getEroded(mask);
+			mask = getDilated(mask);
+
 		/* --------------- */
 		
 		Image loadedImage = toBufferedImage(mask);
