@@ -21,7 +21,10 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
@@ -32,21 +35,51 @@ public class ImageViewer {
 		show(image, "");
 	}
 	
-	public Mat getBlurredImage(Mat image){
-		
-		Mat destination = new Mat(image.rows(),image.cols(),image.type());
-        Imgproc.GaussianBlur(image, destination,new Size(45,45), 0);
-		
+	/* ------------------------------------- */
+	
+	public Mat getBlurredImage(Mat source){
+		Mat destination = new Mat(source.rows(),source.cols(),source.type());
+        Imgproc.GaussianBlur(source, destination,new Size(45,45), 0);
 		return destination;
 	}
+	
+	public Mat getHSVImage(Mat source){
+		Mat destination = new Mat(source.rows(),source.cols(),source.type());
+		Imgproc.cvtColor(source, destination, Imgproc.COLOR_RGB2HSV);
+		return destination;
+	}
+	
+	public Mat getMaskInRange(Mat source){
+		Mat destination = new Mat(source.rows(),source.cols(),source.type());
+		Core.inRange(source, new Scalar(17, 168, 112), new Scalar(255, 255, 255), destination);
+		return destination;
+	}
+	
+	/*public Mat getEroded(Mat source){
+			
+	}
+
+	public Mat getDilated(Mat source){
+		
+	}*/
+	
+	/* ------------------------------------- */
 	
 	public void show(Mat image,String windowName){
 		setSystemLookAndFeel();
 		JFrame frame = createJFrame(windowName);
 		
-		Mat blurredImage = getBlurredImage(image);
 		
-		Image loadedImage = toBufferedImage(blurredImage);
+		/* --------------- */
+		Mat blurredImage = getBlurredImage(image);
+		Mat hsv = getHSVImage(blurredImage);
+		Mat mask = getMaskInRange(hsv);
+		
+		//mask = getEroded(mask);
+		//mask = getDilated(mask);
+		/* --------------- */
+		
+		Image loadedImage = toBufferedImage(mask);
 		imageView.setIcon(new ImageIcon(loadedImage));
 		frame.pack();
 		frame.setLocationRelativeTo(null);
