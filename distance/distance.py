@@ -12,17 +12,15 @@ def getResizeBlurHsv(image):
 	hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 	return hsv
 
-def getMasked(hsv):
+def getMasked(image):
+	hsv = getResizeBlurHsv(image)
 	mask = cv2.inRange(hsv, hsvLower, hsvUpper)
 	mask = cv2.erode(mask, None, iterations=2)
 	mask = cv2.dilate(mask, None, iterations=2)
 	return mask
 
 def getCenter(image):
-
-	hsv = getResizeBlurHsv(image)
-	masked = getMasked(hsv)
-
+	masked = getMasked(image)
 	cnts = cv2.findContours(masked.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)[-2]
 	center = None
 	if len(cnts) > 0:
