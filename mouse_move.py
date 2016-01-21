@@ -4,6 +4,7 @@ import numpy as np
 import argparse
 import imutils
 import cv2
+import pyautogui
  
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
@@ -80,6 +81,7 @@ while True:
 			cv2.circle(frame, (int(x), int(y)), int(radius),
 				(0, 255, 255), 2)
 			cv2.circle(frame, center, 5, (0, 0, 255), -1)
+			pyautogui.moveTo(center[0],center[1])
  
 	# update the points queue
 	#if count%10 == 0:
