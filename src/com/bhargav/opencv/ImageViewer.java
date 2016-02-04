@@ -22,7 +22,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -73,22 +72,20 @@ public class ImageViewer {
 	
 	/* ------------------------------------- */
 	
+	public Mat getProcessed(Mat image){
+		Mat resizeimage = new Mat();
+		Size sz = new Size(700,500);
+		Imgproc.resize( image, resizeimage, sz );
+		return resizeimage;
+	}
+	
 	public void show(Mat image,String windowName){
 		setSystemLookAndFeel();
 		JFrame frame = createJFrame(windowName);
+		Mat processed = getProcessed(image);
 		
-		
-		/* --------------- */
-		Mat blurredImage = getBlurredImage(image);
-		Mat hsv = getHSVImage(blurredImage);
-		
-		Mat mask = getMaskInRange(hsv);
-			mask = getEroded(mask);
-			mask = getDilated(mask);
-
-		/* --------------- */
-		
-		Image loadedImage = toBufferedImage(mask);
+		//put here the whatever processed image 
+		Image loadedImage = toBufferedImage(processed);
 		imageView.setIcon(new ImageIcon(loadedImage));
 		frame.pack();
 		frame.setLocationRelativeTo(null);
