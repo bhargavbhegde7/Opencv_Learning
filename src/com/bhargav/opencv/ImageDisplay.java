@@ -26,7 +26,7 @@ public class ImageDisplay {
 	}
 	
 	public static void main(String[] args) {
-		String filePath = "C:/Users/bhargava/Desktop/red_track.png";
+		String filePath = "C:/Users/bhargava/Desktop/pic1.png";
 		Mat newImage = Imgcodecs.imread(filePath);
 		System.out.println(newImage);
 		if(newImage.dataAddr()==0){
