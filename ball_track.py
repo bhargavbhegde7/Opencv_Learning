@@ -20,14 +20,21 @@ greenLower = (17, 168, 112)
 greenUpper = (255, 255, 255)
 '''
 
+
 #red rubix cube, cloth video
 greenLower = (17, 168, 112)
 greenUpper = (255, 255, 255)
 
 
+'''
+#blue top
+greenLower = (97, 67, 225)
+greenUpper = (255, 255, 255)
+'''
+
 pts = deque()
 
-camera = cv2.VideoCapture('track_red.mp4')
+camera = cv2.VideoCapture('red_blue.mp4')
 path = []
 count = 0
 color = (0, 0, 255)
