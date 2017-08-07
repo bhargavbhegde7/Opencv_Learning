@@ -77,6 +77,8 @@ def main():
         if args['webcam']:
             ret, image = camera.read()
 
+            image = cv2.flip(image,1)
+			
             if not ret:
                 break
 
