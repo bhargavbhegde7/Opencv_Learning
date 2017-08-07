@@ -4,7 +4,7 @@ import numpy as np
 import argparse
 import imutils
 import cv2
- 
+
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
@@ -14,17 +14,17 @@ greenLower = (29, 86, 6)#bgr
 greenUpper = (64, 255, 255)#bgr
 '''
 
-'''
+
 #for the yellow ball video
 greenLower = (17, 168, 112)
 greenUpper = (255, 255, 255)
+
+
 '''
-
-
 #red rubix cube, cloth video
 greenLower = (17, 168, 112)
 greenUpper = (255, 255, 255)
-
+'''
 
 '''
 #blue top
@@ -34,7 +34,7 @@ greenUpper = (255, 255, 255)
 
 pts = deque()
 
-camera = cv2.VideoCapture('red_blue.mp4')
+camera = cv2.VideoCapture('yellowball.mp4')
 path = []
 count = 0
 color = (0, 0, 255)
@@ -45,18 +45,18 @@ while True:
 	count = count+1
 	# grab the current frame
 	(grabbed, frame) = camera.read()
- 
+
 	# if we are viewing a video and we did not grab a frame,
 	# then we have reached the end of the video
 	if not grabbed:
 		break
- 
+
 	# resize the frame, blur it, and convert it to the HSV
 	# color space
 	frame = imutils.resize(frame, width=600)
 	blurred = cv2.GaussianBlur(frame, (11, 11), 0)
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
- 
+
 	# construct a mask for the color "green", then perform
 	# a series of dilations and erosions to remove any small
 	# blobs left in the mask
@@ -87,7 +87,7 @@ while True:
 			cv2.circle(frame, (int(x), int(y)), int(radius),
 				(0, 255, 255), 2)
 			cv2.circle(frame, center, 5, (0, 0, 255), -1)
- 
+
 	# update the points queue
 	#if count%10 == 0:
 	'''
@@ -104,8 +104,8 @@ while True:
 		pts.appendleft(center)
 	'''
 	pts.appendleft(center)
-	
-	
+
+
 	if center is not None and center[0] >= 384:
 		#print center
 		color = (0, 255, 0)
@@ -121,7 +121,7 @@ while True:
 		# them
 		if pts[i - 1] is None or pts[i] is None:
 			continue
- 
+
 		# otherwise, compute the thickness of the line and
 		# draw the connecting lines
 		#thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
@@ -133,12 +133,12 @@ while True:
 		cv2.line(frame, pts[i - 1], pts[i], color, 1)
 		cv2.rectangle(frame,(384,0),(510,128),color,3)
 		#frame[y_offset:y_offset+circle_img.shape[0], x_offset:x_offset+circle_img.shape[1]] = circle_img
-		
- 
+
+
 	# show the frame to our screen
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
- 
+
 	# if the 'q' key is pressed, stop the loop
 	if key == ord("q"):
 		break

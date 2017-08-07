@@ -11,7 +11,8 @@ args = vars(ap.parse_args())
 # load the image
 image = cv2.imread(args["image"])
 
-image = cv2.imread('RGB.jpg')
+#image = cv2.imread('RGB.jpg')
+image = cv2.imread('green_tape_2.jpeg')
 
 # define the list of boundaries
 boundaries = [
@@ -44,12 +45,38 @@ for (lower, upper) in boundaries:
 	cv2.waitKey(0)
 	'''
 
+'''
+#yellow ball HSV
+lower = np.array([0, 176, 114], dtype = "uint8")
+upper = np.array([30, 255, 255], dtype = "uint8")	
+'''
+
+'''
+#green tape HSV
+lower = np.array([31, 61, 203], dtype = "uint8")
+upper = np.array([42, 173, 255], dtype = "uint8")
+'''
+
+#green tape 2
+lower = np.array([40, 58, 122], dtype = "uint8")
+upper = np.array([112, 210, 203], dtype = "uint8")
+
+'''
+#green tape RGB
+lower = np.array([82, 220, 145], dtype = "uint8")
+upper = np.array([217, 255, 255], dtype = "uint8")
+'''
+
+#rubik's cube image
+'''
 lower = np.array([86, 31, 4], dtype = "uint8")
 upper = np.array([220, 88, 50], dtype = "uint8")
+'''
 
 # find the colors within the specified boundaries and apply
 # the mask
-mask = cv2.inRange(image, lower, upper)
+hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+mask = cv2.inRange(hsv, lower, upper)
 output = cv2.bitwise_and(image, image, mask = mask)
 
 # show the images
